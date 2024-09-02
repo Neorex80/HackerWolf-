@@ -4,7 +4,7 @@ import logo from './logo.png';
 
 const Header = () => {
   return (
-    <header className="bg-gray-900 bg-opacity-80 backdrop-blur-md p-4 shadow-lg fixed w-full z-10">
+    <header className="bg-gray-900 bg-opacity-80 backdrop-blur-md p-2 shadow-lg fixed w-full z-10">
       <div className="container mx-auto flex justify-between items-center">
         <img src={logo} alt="HACKERWOLF Logo" className="h-8 w-auto "  />
         <nav>
