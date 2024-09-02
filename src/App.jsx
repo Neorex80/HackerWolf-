@@ -12,7 +12,7 @@ import Profile from './components/Profile';
 function App() {
   return (
     <Router>
-      <div className="bg-gray-900 min-h-screen text-white flex flex-col justify-between">
+      <div className="bg-black min-h-screen text-white flex flex-col justify-between">
         <Header />
 
         <main className="flex-grow">
