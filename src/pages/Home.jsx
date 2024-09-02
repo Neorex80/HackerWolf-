@@ -9,7 +9,6 @@ const Home = () => {
       <Hero />
       <FeaturedContent />
       <RecentPosts />
-      {/* You can add more sections later */}
     </>
   );
 };
