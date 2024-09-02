@@ -1,39 +1,25 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import useUserRole from '../hooks/useUserRole'; // Correct import
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { role, loading } = useUserRole();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard'); // Redirect to the dashboard on successful login
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleGithubLogin = async () => {
-    const provider = new GithubAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      navigate('/dashboard');
+      if (role === 'creator') {
+        navigate('/dashboard/creator');
+      } else {
+        navigate('/dashboard/consumer');
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -68,26 +54,15 @@ const Login = () => {
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <button
           type="submit"
-          className="w-full py-2 bg-green-400 text-black font-bold rounded hover:bg-green-500 mb-4"
+          className="w-full py-2 bg-green-400 text-black font-bold rounded hover:bg-green-500"
         >
           Login
         </button>
-        <div className="flex justify-between">
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 mr-2"
-          >
-            Sign in with Google
-          </button>
-          <button
-            type="button"
-            onClick={handleGithubLogin}
-            className="w-full py-2 bg-gray-700 text-white font-bold rounded hover:bg-gray-800 ml-2"
-          >
-            Sign in with GitHub
-          </button>
-        </div>
+        {!loading && (
+          <p className="mt-4 text-white">
+            Logged in as: <strong>{role}</strong>
+          </p>
+        )}
       </form>
     </div>
   );

@@ -7,12 +7,12 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import Profile from './components/Profile';
+import AdminDashboard from './pages/AdminDashboard'; // Import the admin dashboard
 
 function App() {
   return (
     <Router>
-      <div className="bg-black min-h-screen text-white flex flex-col justify-between">
+      <div className="bg-gray-900 min-h-screen text-white flex flex-col justify-between">
         <Header />
 
         <main className="flex-grow">
@@ -23,6 +23,11 @@ function App() {
             <Route path="/dashboard/*" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute requiredRole="admin"> {/* Assume "admin" role is checked */}
+                <AdminDashboard />
               </ProtectedRoute>
             } />
           </Routes>

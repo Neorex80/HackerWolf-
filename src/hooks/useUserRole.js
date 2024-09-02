@@ -1,27 +1,24 @@
-import { useState, useEffect } from 'react';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import { auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
-const useUserRole = (user) => {
+const useUserRole = () => {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      const fetchUserRole = async () => {
-        const db = getFirestore();
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          setRole(userDoc.data().role);
-        }
-        setLoading(false);
-      };
-
-      fetchUserRole();
-    } else {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const token = await user.getIdTokenResult();
+        setRole(token.claims.creator ? 'creator' : 'consumer');
+      } else {
+        setRole(null);
+      }
       setLoading(false);
-    }
-  }, [user]);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return { role, loading };
 };

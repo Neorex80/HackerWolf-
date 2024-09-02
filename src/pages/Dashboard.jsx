@@ -1,45 +1,22 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import CreatePost from '../components/creator/CreatePost';
-import ManagePosts from '../components/creator/ManagePosts';
-import Analytics from '../components/creator/Analytics';
-import SavedPosts from '../components/consumer/SavedPosts';
-import Profile from '../components/Profile';
-import ProtectedRoute from '../components/ProtectedRoute';
+import useUserRole from '../hooks/useUserRole';
+import CreatorDashboard from '../components/CreatorDashboard';
+import ConsumerDashboard from '../components/ConsumerDashboard';
 
 const Dashboard = () => {
-  return (
-    <div className="dashboard-container">
-      <Routes>
-        <Route path="/" element={<Navigate to="profile" />} />
-        <Route path="profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } />
-        <Route path="create-post" element={
-          <ProtectedRoute requiredRole="creator">
-            <CreatePost />
-          </ProtectedRoute>
-        } />
-        <Route path="manage-posts" element={
-          <ProtectedRoute requiredRole="creator">
-            <ManagePosts />
-          </ProtectedRoute>
-        } />
-        <Route path="analytics" element={
-          <ProtectedRoute requiredRole="creator">
-            <Analytics />
-          </ProtectedRoute>
-        } />
-        <Route path="saved-posts" element={
-          <ProtectedRoute requiredRole="consumer">
-            <SavedPosts />
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </div>
-  );
+  const { role, loading } = useUserRole();
+
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading indicator while the role is being determined
+  }
+
+  if (role === 'creator') {
+    return <CreatorDashboard />;
+  } else if (role === 'consumer') {
+    return <ConsumerDashboard />;
+  } else {
+    return <div>Unauthorized Access</div>; // Handle cases where the role is undefined or user isn't authorized
+  }
 };
 
 export default Dashboard;
